@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SG Panchang · சிங்கப்பூர் பஞ்சாங்கம்</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Space+Mono:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:     #0D0820;
+      --card:   #1C1440;
+      --gold:   #FFD250;
+      --white:  #F0EAD6;
+      --muted:  rgba(240,234,214,0.5);
+      --red:    #FF6B6B;
+      --green:  #6BFFB8;
+      --blue:   #6BB8FF;
+      --border: rgba(255,210,80,0.2);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--bg); color: var(--white);
+      font-family: 'Crimson Pro', Georgia, serif;
+      min-height: 100vh; padding: 20px 16px 60px;
+    }
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image:
+        radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 10%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 25% 80%, rgba(255,210,80,0.5) 0%, transparent 100%),
+        radial-gradient(2px 2px at 85% 15%, rgba(255,210,80,0.4) 0%, transparent 100%);
+      pointer-events:none; z-index:0;
+    }
+    .container {
+      max-width:480px; margin:0 auto;
+      position:relative; z-index:1;
+      display:flex; flex-direction:column; gap:12px;
+    }
+    /* Header */
+    .header { text-align:center; padding:16px 0 8px; }
+    .header-om { font-size:32px; color:var(--gold); text-shadow:0 0 20px rgba(255,210,80,0.5); margin-bottom:4px; }
+    .header h1 { font-family:'Playfair Display',serif; font-size:26px; color:var(--gold); letter-spacing:2px; margin-bottom:2px; }
+    .header p { font-size:13px; color:var(--muted); letter-spacing:1px; }
+    /* Clock */
+    .clock-bar {
+      background:var(--card); border:1px solid var(--border); border-radius:14px;
+      padding:12px 20px; display:flex; justify-content:space-between; align-items:center;
+    }
+    .clock-time { font-family:'Space Mono',monospace; font-size:24px; font-weight:700; color:var(--gold); letter-spacing:2px; }
+    .clock-date { font-size:14px; color:var(--muted); text-align:right; line-height:1.4; }
+    /* Tamil month strip */
+    .month-strip {
+      background:linear-gradient(90deg, #2A1060, #1C1440);
+      border:1px solid rgba(255,210,80,0.3); border-radius:12px;
+      padding:10px 16px; display:flex; justify-content:space-between; align-items:center;
+    }
+    .month-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
+    .month-value { font-size:18px; color:var(--gold); font-weight:600; }
+    /* Tithi card */
+    .tithi-card {
+      background:linear-gradient(135deg,#1C1440,#241860,#1A0F38);
+      border:1px solid rgba(255,210,80,0.3); border-radius:18px; padding:22px;
+      position:relative; overflow:hidden;
+    }
+    .tithi-card::before {
+      content:''; position:absolute; top:-40px; right:-40px;
+      width:160px; height:160px;
+      background:radial-gradient(circle,rgba(255,210,80,0.1) 0%,transparent 70%);
+      border-radius:50%;
+    }
+    .tithi-card-top { display:flex; align-items:center; gap:18px; margin-bottom:14px; }
+    .moon-icon { font-size:52px; line-height:1; filter:drop-shadow(0 0 12px rgba(255,210,80,0.4)); }
+    .tithi-info { flex:1; }
+    .tithi-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:3px; }
+    .tithi-name-en { font-family:'Playfair Display',serif; font-size:22px; color:var(--gold); font-weight:700; line-height:1.1; margin-bottom:3px; }
+    .tithi-name-ta { font-size:17px; color:var(--white); opacity:0.85; margin-bottom:6px; }
+    .paksha-badge {
+      display:inline-block; background:rgba(255,210,80,0.15); border:1px solid rgba(255,210,80,0.3);
+      color:var(--gold); font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1px; padding:3px 10px; border-radius:20px;
+    }
+    .tithi-ends {
+      background:rgba(0,0,0,0.2); border-radius:10px; padding:11px 14px;
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .tithi-ends-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; }
+    .tithi-ends-time { font-size:14px; color:var(--white); margin-top:2px; }
+    .tithi-ends-time span { color:var(--gold); font-weight:600; }
+    .countdown { font-family:'Space Mono',monospace; font-size:19px; font-weight:700; color:var(--gold); letter-spacing:2px; }
+    /* Grid */
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .info-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; }
+    .info-card-icon { font-size:20px; margin-bottom:5px; display:block; }
+    .info-card-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; margin-bottom:4px; }
+    .info-card-value { font-size:15px; font-weight:600; color:var(--white); line-height:1.3; }
+    .info-card-sub { font-size:11px; color:var(--muted); margin-top:3px; }
+    .info-card-sub2 { font-size:12px; color:rgba(107,184,255,0.8); margin-top:2px; }
+    /* Sun card */
+    .sun-card {
+      background:var(--card); border:1px solid var(--border); border-radius:14px;
+      padding:14px 18px; display:flex; justify-content:space-around; align-items:center;
+    }
+    .sun-item { text-align:center; }
+    .sun-emoji { font-size:22px; display:block; margin:4px 0; }
+    .sun-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--muted); text-transform:uppercase; }
+    .sun-time { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; color:var(--gold); margin-top:2px; }
+    .sun-divider { width:1px; height:46px; background:var(--border); }
+    /* Section heading */
+    .section-heading { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; padding:4px 2px; }
+    /* Time rows */
+    .time-row {
+      background:var(--card); border:1px solid var(--border); border-radius:12px;
+      padding:12px 15px; display:flex; align-items:center; justify-content:space-between;
+      transition:border-color 0.2s;
+    }
+    .time-row.active { border-color:rgba(255,107,107,0.6); background:rgba(255,107,107,0.07); }
+    .time-row-left { display:flex; align-items:center; gap:10px; }
+    .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .dot.bad  { background:var(--red);   box-shadow:0 0 6px var(--red); }
+    .dot.good { background:var(--green); box-shadow:0 0 6px var(--green); }
+    .dot.blue { background:var(--blue);  box-shadow:0 0 6px var(--blue); }
+    .time-name { font-size:14px; }
+    .now-badge { font-family:'Space Mono',monospace; font-size:8px; background:var(--red); color:white; padding:2px 6px; border-radius:4px; letter-spacing:0.5px; }
+    .time-period { font-family:'Space Mono',monospace; font-size:12px; color:var(--gold); }
+    /* Nalla Neram special */
+    .nalla-card {
+      background:linear-gradient(135deg,rgba(107,255,184,0.07),rgba(107,184,255,0.04));
+      border:1px solid rgba(107,255,184,0.2); border-radius:14px; padding:14px 16px;
+    }
+    .nalla-card .info-card-label { color:rgba(107,255,184,0.7); }
+    .nalla-periods { margin-top:6px; display:flex; flex-direction:column; gap:4px; }
+    .nalla-period { font-family:'Space Mono',monospace; font-size:12px; color:var(--white); }
+    /* Brahma muhurta */
+    .brahma-card {
+      background:linear-gradient(135deg,rgba(255,210,80,0.06),rgba(255,150,80,0.04));
+      border:1px solid rgba(255,210,80,0.2); border-radius:14px; padding:14px 16px;
+    }
+    .brahma-card .info-card-label { color:rgba(255,210,80,0.7); }
+    .disclaimer { font-size:11px; color:var(--muted); font-style:italic; margin-top:4px; }
+    /* Loading / Error */
+    .loading { text-align:center; padding:40px 20px; color:var(--muted); font-style:italic; font-size:16px; }
+    .loading .spinner { font-size:32px; display:block; margin-bottom:12px; animation:spin 2s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .error-box { background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.3); border-radius:12px; padding:16px; color:var(--red); font-size:14px; line-height:1.6; }
+    /* Footer */
+    .footer { text-align:center; font-size:11px; color:rgba(240,234,214,0.3); letter-spacing:1px; padding:8px 0; font-style:italic; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+
+<div style="background:rgba(255,210,80,0.15);border:1px solid rgba(255,210,80,0.4);border-radius:10px;padding:10px 14px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;color:#FFD250;">
+  🚧 WORK IN PROGRESS · Beta v0.1 · Data may vary slightly from published panchangams
+</div>
+
+  <div class="header">
+    <div class="header-om">ॐ</div>
+    <h1>SG Panchang</h1>
+    <p>சிங்கப்பூர் பஞ்சாங்கம் · Singapore Standard Time</p>
+  </div>
+
+  <div class="clock-bar">
+    <div class="clock-time" id="clock">--:--:--</div>
+    <div class="clock-date" id="clock-date">Loading...</div>
+  </div>
+
+  <div id="main-content">
+    <div class="loading"><span class="spinner">🌙</span>Consulting the stars…</div>
+  </div>
+
+  <div class="footer">Lahiri Ayanamsa · Thirukanitham Standard · SGT (UTC+8)</div>
+</div>
+
+<script>
+const API = 'http://127.0.0.1:8000';
+let SUNRISE_H = 7.15, SUNSET_H = 19.25, NOON_H = 13.20;
+
+const RAHU_PORTIONS   = [8,2,7,5,6,4,3];
+const YAMA_PORTIONS   = [5,4,3,2,1,7,6];
+const GULIKA_PORTIONS = [7,6,5,4,3,2,1];
+
+function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
+
+function fmtH(h) {
+  let hh = Math.floor(h) % 24, mm = Math.round((h%1)*60);
+  if (mm===60){hh++;mm=0;}
+  const ap = hh<12?'AM':'PM', h12 = hh%12||12;
+  return `${pad(h12)}:${pad(mm)} ${ap}`;
+}
+
+function getTimePeriod(portion, sunriseH, dayDurH) {
+  const slot = dayDurH/8;
+  const startH = sunriseH + (portion-1)*slot;
+  const endH   = startH + slot;
+  return { str:`${fmtH(startH)} – ${fmtH(endH)}`, startH, endH };
+}
+
+function getMoonEmoji(i) {
+  if(i===15)return'🌕'; if(i===30||i===1)return'🌑';
+  if(i<=7)return'🌒'; if(i<=14)return'🌔';
+  if(i<=22)return'🌖'; return'🌘';
+}
+
+function updateClock() {
+  const sgt = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Singapore'}));
+  document.getElementById('clock').textContent = `${pad(sgt.getHours())}:${pad(sgt.getMinutes())}:${pad(sgt.getSeconds())}`;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('clock-date').innerHTML = `${days[sgt.getDay()]}<br>${sgt.getDate()} ${months[sgt.getMonth()]} ${sgt.getFullYear()}`;
+}
+
+let tithiEndsAt = null;
+function updateCountdown() {
+  if (!tithiEndsAt) return;
+  const diff = tithiEndsAt - new Date();
+  if (diff <= 0) { loadPanchanga(); return; }
+  const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+  const el=document.getElementById('countdown');
+  if(el) el.textContent=`${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
+function buildUI(data, sunData) {
+  const tithi=data.tithi, nak=data.nakshatra, yoga=data.yoga, karana=data.karana, tm=data.tamil_month;
+  tithiEndsAt = new Date(tithi.ends_at_sgt_iso);
+
+  const sunriseH=SUNRISE_H, sunsetH=SUNSET_H, noonH=NOON_H, dayDurH=sunsetH-sunriseH;
+  const sgt=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Singapore'}));
+  const nowH=sgt.getHours()+sgt.getMinutes()/60, wd=sgt.getDay();
+
+  const rahu=getTimePeriod(RAHU_PORTIONS[wd],sunriseH,dayDurH);
+  const yama=getTimePeriod(YAMA_PORTIONS[wd],sunriseH,dayDurH);
+  const gulika=getTimePeriod(GULIKA_PORTIONS[wd],sunriseH,dayDurH);
+
+  const abhijitStr=`${fmtH(noonH-0.4)} – ${fmtH(noonH+0.4)}`;
+  const brahmaStr=`${fmtH(sunriseH-1.6)} – ${fmtH(sunriseH-0.8)}`;
+
+  const ac=p=>(nowH>=p.startH&&nowH<p.endH)?'active':'';
+  const nb=p=>(nowH>=p.startH&&nowH<p.endH)?'<span class="now-badge">NOW</span>':'';
+
+  const nallaHTML = (sunData.nalla_neram||[]).map(t=>`<div class="nalla-period">🟢 ${t}</div>`).join('');
+  const gowriHTML = (sunData.gowri_nalla_neram||[]).map(t=>`<div class="nalla-period">🔵 ${t}</div>`).join('');
+
+  document.getElementById('main-content').innerHTML = `
+
+    <div class="month-strip">
+      <div>
+        <div class="month-label">Tamil Month · தமிழ் மாதம்</div>
+        <div class="month-value">${tm.month_name} ${tm.day}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="month-label">Paksha · பக்ஷம்</div>
+        <div class="month-value" style="font-size:14px;">${tithi.paksha}</div>
+      </div>
+    </div>
+
+    <div class="tithi-card">
+      <div class="tithi-card-top">
+        <div class="moon-icon">${getMoonEmoji(tithi.index)}</div>
+        <div class="tithi-info">
+          <div class="tithi-label">Today's Tithi · திதி</div>
+          <div class="tithi-name-en">${tithi.name}</div>
+          <div class="tithi-name-ta">${tithi.name_tamil}</div>
+          <span class="paksha-badge">${tithi.paksha} Paksha · Tithi ${tithi.index}</span>
+        </div>
+      </div>
+      <div class="tithi-ends">
+        <div>
+          <div class="tithi-ends-label">Tithi Ends At</div>
+          <div class="tithi-ends-time"><span>${tithi.ends_at_sgt}</span></div>
+        </div>
+        <div class="countdown" id="countdown">${tithi.time_remaining}</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="info-card">
+        <span class="info-card-icon">⭐</span>
+        <div class="info-card-label">Nakshatra · நட்சத்திரம்</div>
+        <div class="info-card-value">${nak.name}</div>
+        <div class="info-card-sub">${nak.name_tamil}</div>
+        <div class="info-card-sub2">Until ${nak.ends_at_sgt}</div>
+      </div>
+      <div class="info-card">
+        <span class="info-card-icon">🌀</span>
+        <div class="info-card-label">Yoga · யோகம்</div>
+        <div class="info-card-value">${yoga.name}</div>
+        <div class="info-card-sub">Karana: ${karana.name}</div>
+      </div>
+    </div>
+
+    <div class="sun-card">
+      <div class="sun-item">
+        <div class="sun-label">Sunrise</div>
+        <span class="sun-emoji">🌅</span>
+        <div class="sun-time">${sunData.sunrise_sgt}</div>
+      </div>
+      <div class="sun-divider"></div>
+      <div class="sun-item">
+        <div class="sun-label">Solar Noon</div>
+        <span class="sun-emoji">☀️</span>
+        <div class="sun-time">${sunData.noon_sgt}</div>
+      </div>
+      <div class="sun-divider"></div>
+      <div class="sun-item">
+        <div class="sun-label">Sunset</div>
+        <span class="sun-emoji">🌇</span>
+        <div class="sun-time">${sunData.sunset_sgt}</div>
+      </div>
+    </div>
+
+    <div class="section-heading">✨ Auspicious Periods</div>
+
+    <div class="brahma-card">
+      <div class="info-card-label">Brahma Muhurta · பிரம்ம முகூர்த்தம்</div>
+      <div class="info-card-value" style="font-size:16px;margin-top:4px;">${brahmaStr}</div>
+      <div class="disclaimer">* Time may vary by 1–2 minutes depending on exact sunrise</div>
+    </div>
+
+    <div class="nalla-card">
+      <div class="info-card-label">Nalla Neram · நல்ல நேரம்</div>
+      <div class="nalla-periods">${nallaHTML||'<div class="nalla-period" style="color:var(--muted)">Calculating…</div>'}</div>
+    </div>
+
+    <div class="nalla-card" style="border-color:rgba(107,184,255,0.2);">
+      <div class="info-card-label" style="color:rgba(107,184,255,0.7);">Gowri Nalla Neram · கௌரி நல்ல நேரம்</div>
+      <div class="nalla-periods">${gowriHTML||'<div class="nalla-period" style="color:var(--muted)">Calculating…</div>'}</div>
+    </div>
+
+    <div class="nalla-card" style="border-color:rgba(255,210,80,0.2);">
+      <div class="info-card-label" style="color:rgba(255,210,80,0.6);">Abhijit Muhurta · அபிஜித் முகூர்த்தம்</div>
+      <div class="nalla-periods"><div class="nalla-period">⭐ ${abhijitStr}</div></div>
+      <div class="disclaimer" style="margin-top:6px;">Most auspicious ~48 min window of the day</div>
+    </div>
+
+    <div class="section-heading">⚠ Inauspicious Periods</div>
+
+    <div class="time-row ${ac(rahu)}">
+      <div class="time-row-left"><div class="dot bad"></div><div class="time-name">Rahu Kalam · ராகு காலம் ${nb(rahu)}</div></div>
+      <div class="time-period">${rahu.str}</div>
+    </div>
+    <div class="time-row ${ac(yama)}">
+      <div class="time-row-left"><div class="dot bad"></div><div class="time-name">Yama Gandam · எமகண்டம் ${nb(yama)}</div></div>
+      <div class="time-period">${yama.str}</div>
+    </div>
+    <div class="time-row ${ac(gulika)}">
+      <div class="time-row-left"><div class="dot bad"></div><div class="time-name">Gulika Kalam · குளிகை காலம் ${nb(gulika)}</div></div>
+      <div class="time-period">${gulika.str}</div>
+    </div>
+
+  `;
+}
+
+async function loadPanchanga() {
+  try {
+    const [tithiRes, sunRes] = await Promise.all([
+      fetch(`${API}/tithi-now`),
+      fetch(`${API}/sunrise`)
+    ]);
+    if (!tithiRes.ok) throw new Error(`Tithi API: ${tithiRes.status}`);
+    if (!sunRes.ok)   throw new Error(`Sunrise API: ${sunRes.status}`);
+    const data=await tithiRes.json(), sunData=await sunRes.json();
+    SUNRISE_H=sunData.sunrise_h; SUNSET_H=sunData.sunset_h; NOON_H=sunData.noon_h;
+    buildUI(data, sunData);
+  } catch(err) {
+    document.getElementById('main-content').innerHTML=`
+      <div class="error-box">
+        ⚠️ <strong>Could not connect to API.</strong><br><br>
+        Run in terminal:<br>
+        <code style="background:rgba(255,255,255,0.1);padding:6px 10px;border-radius:4px;display:inline-block;margin-top:8px;">
+          fastapi dev app/main.py
+        </code><br><br>
+        Then refresh.<br><br>
+        <small style="opacity:0.6;">Error: ${err.message}</small>
+      </div>`;
+  }
+}
+
+updateClock();
+loadPanchanga();
+setInterval(updateClock, 1000);
+setInterval(updateCountdown, 1000);
+setInterval(loadPanchanga, 60000);
+</script>
+</body>
+</html>
