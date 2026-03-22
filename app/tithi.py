@@ -69,25 +69,21 @@ KARANA_NAMES = [
     "Shakuni","Chatushpada","Naga","Kimstughna",
 ]
 
-# Tamil months (solar, Mesha=Chithirai)
 TAMIL_MONTHS = [
     "சித்திரை","வைகாசி","ஆனி","ஆடி","ஆவணி","புரட்டாசி",
     "ஐப்பசி","கார்த்திகை","மார்கழி","தை","மாசி","பங்குனி",
 ]
 
-# Nalla Neram by weekday (0=Sun). Each entry is list of (start_portion, duration_hours)
-# Based on traditional Tamil calendar - portions of the day
 NALLA_NERAM = {
-    0: [(7, 1.5), (4, 1.5)],   # Sun
-    1: [(2, 1.5), (6, 1.5)],   # Mon
-    2: [(6, 1.5), (3, 1.5)],   # Tue
-    3: [(5, 1.5), (7, 1.5)],   # Wed
-    4: [(3, 1.5), (5, 1.5)],   # Thu
-    5: [(1, 1.5), (2, 1.5)],   # Fri - Nalla Neram
-    6: [(4, 1.5), (1, 1.5)],   # Sat
+    0: [(7, 1.5), (4, 1.5)],
+    1: [(2, 1.5), (6, 1.5)],
+    2: [(6, 1.5), (3, 1.5)],
+    3: [(5, 1.5), (7, 1.5)],
+    4: [(3, 1.5), (5, 1.5)],
+    5: [(1, 1.5), (2, 1.5)],
+    6: [(4, 1.5), (1, 1.5)],
 }
 
-# Gowri Nalla Neram by weekday
 GOWRI_NALLA_NERAM = {
     0: [(5, 1.5), (2, 1.5)],
     1: [(4, 1.5), (1, 1.5)],
@@ -120,15 +116,29 @@ def to_julian_day(dt_utc: datetime) -> float:
     if dt_utc.tzinfo is None:
         raise ValueError("datetime must be timezone-aware")
     dt_utc = dt_utc.astimezone(timezone.utc)
-    h = dt_utc.hour + dt_utc.minute/60 + dt_utc.second/3600 + dt_utc.microsecond/3_600_000_000
+    h = (dt_utc.hour + dt_utc.minute / 60
+         + dt_utc.second / 3600
+         + dt_utc.microsecond / 3_600_000_000)
     return swe.julday(dt_utc.year, dt_utc.month, dt_utc.day, h)
+
+
+def _moon_sidereal_lon(dt_utc: datetime) -> float:
+    """Return Moon's sidereal longitude using Swiss Ephemeris (Lahiri)."""
+    jd = to_julian_day(dt_utc)
+    return swe.calc_ut(jd, swe.MOON, swe.FLG_SIDEREAL)[0][0] % 360
+
+
+def _sun_sidereal_lon(dt_utc: datetime) -> float:
+    """Return Sun's sidereal longitude using Swiss Ephemeris (Lahiri)."""
+    jd = to_julian_day(dt_utc)
+    return swe.calc_ut(jd, swe.SUN, swe.FLG_SIDEREAL)[0][0] % 360
 
 
 def sun_moon_sidereal(dt_utc: datetime):
     jd = to_julian_day(dt_utc)
-    sun  = swe.calc_ut(jd, swe.SUN,  swe.FLG_SIDEREAL)[0][0]
-    moon = swe.calc_ut(jd, swe.MOON, swe.FLG_SIDEREAL)[0][0]
-    return sun % 360, moon % 360
+    sun  = swe.calc_ut(jd, swe.SUN,  swe.FLG_SIDEREAL)[0][0] % 360
+    moon = swe.calc_ut(jd, swe.MOON, swe.FLG_SIDEREAL)[0][0] % 360
+    return sun, moon
 
 
 def elongation_deg(dt_utc: datetime) -> float:
@@ -141,47 +151,50 @@ def tithi_at(dt_utc: datetime) -> TithiInfo:
     idx = int(math.floor(e / 12.0)) % 30
     paksha = "Shukla" if idx < 15 else "Krishna"
     return TithiInfo(
-        index=idx, name=TITHI_NAMES[idx],
+        index=idx,
+        name=TITHI_NAMES[idx],
         name_tamil=TITHI_NAMES_TAMIL[idx],
-        elongation=round(e, 4), paksha=paksha,
+        elongation=round(e, 4),
+        paksha=paksha,
     )
 
 
 def nakshatra_at(dt_utc: datetime) -> NakshatraInfo:
-    jd = to_julian_day(dt_utc)
-    moon = swe.calc_ut(jd, swe.MOON, swe.FLG_SIDEREAL)[0][0] % 360
-    nak_span = 360 / 27
-    idx  = int(moon / nak_span)
-    pada = int((moon % nak_span) / (nak_span / 4)) + 1
+    """
+    Calculate nakshatra from Moon's sidereal longitude.
+    Each nakshatra = 360/27 = 13.3333...degrees
+    Uses Swiss Ephemeris with Lahiri ayanamsa for accuracy.
+    """
+    moon = _moon_sidereal_lon(dt_utc)
+    nak_span = 360.0 / 27.0          # 13.33333...
+    idx  = int(moon / nak_span) % 27
+    pada = int((moon % nak_span) / (nak_span / 4.0)) + 1
     return NakshatraInfo(
-        index=idx, name=NAKSHATRA_NAMES[idx],
-        name_tamil=NAKSHATRA_NAMES_TAMIL[idx], pada=pada,
+        index=idx,
+        name=NAKSHATRA_NAMES[idx],
+        name_tamil=NAKSHATRA_NAMES_TAMIL[idx],
+        pada=pada,
     )
 
 
 def yoga_at(dt_utc: datetime) -> dict:
     sun_lon, moon_lon = sun_moon_sidereal(dt_utc)
     total = (sun_lon + moon_lon) % 360
-    idx = int(total / (360/27))
+    idx = int(total / (360.0 / 27.0)) % 27
     return {"index": idx + 1, "name": YOGA_NAMES[idx]}
 
 
 def karana_at(dt_utc: datetime) -> dict:
     e = elongation_deg(dt_utc)
-    idx = int(e / 6) % 60
+    idx = int(e / 6.0) % 60
     name = KARANA_NAMES[idx % len(KARANA_NAMES)]
     return {"index": idx + 1, "name": name}
 
 
 def get_tamil_month(dt_utc: datetime) -> dict:
-    """
-    Tamil solar month based on Sun's sidereal longitude.
-    Mesha (Aries) = Chithirai (month 0), etc.
-    """
-    jd = to_julian_day(dt_utc)
-    sun = swe.calc_ut(jd, swe.SUN, swe.FLG_SIDEREAL)[0][0] % 360
-    month_idx = int(sun / 30)  # 0=Mesha/Chithirai
-    day_in_month = int((sun % 30)) + 1
+    sun = _sun_sidereal_lon(dt_utc)
+    month_idx = int(sun / 30.0) % 12
+    day_in_month = int(sun % 30.0) + 1
     return {
         "month_index": month_idx + 1,
         "month_name": TAMIL_MONTHS[month_idx],
@@ -191,14 +204,17 @@ def get_tamil_month(dt_utc: datetime) -> dict:
 
 
 def find_next_tithi_boundary(start_utc: datetime, max_hours: int = 30) -> datetime:
+    """Binary-search for exact moment the current tithi ends."""
     current_idx = tithi_at(start_utc).index
-    step = timedelta(minutes=30)
+    step = timedelta(minutes=15)
     t1, t2 = start_utc, start_utc + step
     found = False
-    for _ in range(int(max_hours * 60 / 30)):
+    for _ in range(int(max_hours * 60 / 15)):
         if tithi_at(t2).index != current_idx:
-            found = True; break
-        t1 = t2; t2 += step
+            found = True
+            break
+        t1 = t2
+        t2 += step
     if not found:
         raise RuntimeError("Could not find next tithi boundary")
     left, right = t1, t2
@@ -211,17 +227,24 @@ def find_next_tithi_boundary(start_utc: datetime, max_hours: int = 30) -> dateti
     return right
 
 
-def find_next_nakshatra_boundary(start_utc: datetime, max_hours: int = 30) -> datetime:
+def find_next_nakshatra_boundary(start_utc: datetime, max_hours: int = 48) -> datetime:
+    """
+    Binary-search for exact nakshatra boundary.
+    Uses 10-minute steps for better accuracy, then narrows to 1 second.
+    """
     current_idx = nakshatra_at(start_utc).index
-    step = timedelta(minutes=30)
+    step = timedelta(minutes=10)
     t1, t2 = start_utc, start_utc + step
     found = False
-    for _ in range(int(max_hours * 60 / 30)):
+    for _ in range(int(max_hours * 60 / 10)):
         if nakshatra_at(t2).index != current_idx:
-            found = True; break
-        t1 = t2; t2 += step
+            found = True
+            break
+        t1 = t2
+        t2 += step
     if not found:
         raise RuntimeError("Could not find next nakshatra boundary")
+    # Narrow down to within 1 second
     left, right = t1, t2
     while (right - left).total_seconds() > 1:
         mid = left + (right - left) / 2
