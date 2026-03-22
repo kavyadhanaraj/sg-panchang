@@ -3,6 +3,60 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- ═══ GOOGLE SEARCH CONSOLE VERIFICATION ═══ -->
+  <meta name="google-site-verification" content="dhzT8oaz7PqcWL1C1F9IawST2FxtIw5qBhUh0Zs12x0" />
+
+  <!-- ═══ PRIMARY SEO ═══ -->
+  <title>SG Panchang – Singapore Panchangam Today | Tithi, Rahu Kalam, Nakshatra SGT</title>
+  <meta name="description" content="Free Singapore Panchangam – Today's Tithi, Nakshatra, Rahu Kalam, Yama Gandam, Nalla Neram & Muhurta in Singapore Standard Time (SGT). Tamil Panchang for Singapore. சிங்கப்பூர் பஞ்சாங்கம்." />
+  <meta name="keywords" content="singapore panchang, singapore panchangam, rahu kalam singapore, tithi singapore today, nakshatra singapore, nalla neram singapore, tamil calendar singapore, singapore hindu calendar, panchangam singapore today, rahu kalam singapore today, யோகம் சிங்கப்பூர், நட்சத்திரம் சிங்கப்பூர், ராகு காலம் சிங்கப்பூர், நல்ல நேரம் சிங்கப்பூர்" />
+  <meta name="author" content="SG Panchang" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://kavyadhanaraj.github.io/sg-panchang/" />
+
+  <!-- ═══ OPEN GRAPH (WhatsApp, Facebook previews) ═══ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kavyadhanaraj.github.io/sg-panchang/" />
+  <meta property="og:title" content="SG Panchang – Singapore Panchangam Today" />
+  <meta property="og:description" content="Today's Tithi, Nakshatra, Rahu Kalam, Nalla Neram & Muhurta in Singapore Standard Time. Free Tamil Panchang for Singapore." />
+  <meta property="og:image" content="https://kavyadhanaraj.github.io/sg-panchang/preview.png" />
+  <meta property="og:locale" content="en_SG" />
+  <meta property="og:site_name" content="SG Panchang" />
+
+  <!-- ═══ TWITTER CARD ═══ -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SG Panchang – Singapore Panchangam Today" />
+  <meta name="twitter:description" content="Today's Tithi, Nakshatra, Rahu Kalam & Nalla Neram in SGT. Free Tamil Panchang for Singapore." />
+
+  <!-- ═══ STRUCTURED DATA (Google Rich Results) ═══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SG Panchang",
+    "alternateName": "சிங்கப்பூர் பஞ்சாங்கம்",
+    "url": "https://kavyadhanaraj.github.io/sg-panchang/",
+    "description": "Free Singapore Panchangam showing today's Tithi, Nakshatra, Rahu Kalam, Yama Gandam, Nalla Neram and Muhurta timings in Singapore Standard Time.",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "SGD"
+    },
+    "inLanguage": ["en", "ta"],
+    "keywords": "panchang, panchangam, singapore, rahu kalam, tithi, nakshatra, nalla neram",
+    "audience": {
+      "@type": "Audience",
+      "geographicArea": {
+        "@type": "Country",
+        "name": "Singapore"
+      }
+    }
+  }
+  </script>
+
   <title>SG Panchang · சிங்கப்பூர் பஞ்சாங்கம்</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Space+Mono:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
   <style>
@@ -39,27 +93,31 @@
       position:relative; z-index:1;
       display:flex; flex-direction:column; gap:12px;
     }
-    /* Header */
+    .wip-banner {
+      background:rgba(255,210,80,0.15);
+      border:1px solid rgba(255,210,80,0.4);
+      border-radius:10px; padding:10px 14px;
+      text-align:center;
+      font-family:'Space Mono',monospace;
+      font-size:11px; letter-spacing:1px; color:#FFD250;
+    }
     .header { text-align:center; padding:16px 0 8px; }
     .header-om { font-size:32px; color:var(--gold); text-shadow:0 0 20px rgba(255,210,80,0.5); margin-bottom:4px; }
     .header h1 { font-family:'Playfair Display',serif; font-size:26px; color:var(--gold); letter-spacing:2px; margin-bottom:2px; }
     .header p { font-size:13px; color:var(--muted); letter-spacing:1px; }
-    /* Clock */
     .clock-bar {
       background:var(--card); border:1px solid var(--border); border-radius:14px;
       padding:12px 20px; display:flex; justify-content:space-between; align-items:center;
     }
     .clock-time { font-family:'Space Mono',monospace; font-size:24px; font-weight:700; color:var(--gold); letter-spacing:2px; }
     .clock-date { font-size:14px; color:var(--muted); text-align:right; line-height:1.4; }
-    /* Tamil month strip */
     .month-strip {
-      background:linear-gradient(90deg, #2A1060, #1C1440);
+      background:linear-gradient(90deg,#2A1060,#1C1440);
       border:1px solid rgba(255,210,80,0.3); border-radius:12px;
       padding:10px 16px; display:flex; justify-content:space-between; align-items:center;
     }
     .month-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
     .month-value { font-size:18px; color:var(--gold); font-weight:600; }
-    /* Tithi card */
     .tithi-card {
       background:linear-gradient(135deg,#1C1440,#241860,#1A0F38);
       border:1px solid rgba(255,210,80,0.3); border-radius:18px; padding:22px;
@@ -89,7 +147,6 @@
     .tithi-ends-time { font-size:14px; color:var(--white); margin-top:2px; }
     .tithi-ends-time span { color:var(--gold); font-weight:600; }
     .countdown { font-family:'Space Mono',monospace; font-size:19px; font-weight:700; color:var(--gold); letter-spacing:2px; }
-    /* Grid */
     .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .info-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; }
     .info-card-icon { font-size:20px; margin-bottom:5px; display:block; }
@@ -97,7 +154,6 @@
     .info-card-value { font-size:15px; font-weight:600; color:var(--white); line-height:1.3; }
     .info-card-sub { font-size:11px; color:var(--muted); margin-top:3px; }
     .info-card-sub2 { font-size:12px; color:rgba(107,184,255,0.8); margin-top:2px; }
-    /* Sun card */
     .sun-card {
       background:var(--card); border:1px solid var(--border); border-radius:14px;
       padding:14px 18px; display:flex; justify-content:space-around; align-items:center;
@@ -107,9 +163,7 @@
     .sun-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--muted); text-transform:uppercase; }
     .sun-time { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; color:var(--gold); margin-top:2px; }
     .sun-divider { width:1px; height:46px; background:var(--border); }
-    /* Section heading */
     .section-heading { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; padding:4px 2px; }
-    /* Time rows */
     .time-row {
       background:var(--card); border:1px solid var(--border); border-radius:12px;
       padding:12px 15px; display:flex; align-items:center; justify-content:space-between;
@@ -120,11 +174,9 @@
     .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
     .dot.bad  { background:var(--red);   box-shadow:0 0 6px var(--red); }
     .dot.good { background:var(--green); box-shadow:0 0 6px var(--green); }
-    .dot.blue { background:var(--blue);  box-shadow:0 0 6px var(--blue); }
     .time-name { font-size:14px; }
     .now-badge { font-family:'Space Mono',monospace; font-size:8px; background:var(--red); color:white; padding:2px 6px; border-radius:4px; letter-spacing:0.5px; }
     .time-period { font-family:'Space Mono',monospace; font-size:12px; color:var(--gold); }
-    /* Nalla Neram special */
     .nalla-card {
       background:linear-gradient(135deg,rgba(107,255,184,0.07),rgba(107,184,255,0.04));
       border:1px solid rgba(107,255,184,0.2); border-radius:14px; padding:14px 16px;
@@ -132,35 +184,42 @@
     .nalla-card .info-card-label { color:rgba(107,255,184,0.7); }
     .nalla-periods { margin-top:6px; display:flex; flex-direction:column; gap:4px; }
     .nalla-period { font-family:'Space Mono',monospace; font-size:12px; color:var(--white); }
-    /* Brahma muhurta */
     .brahma-card {
       background:linear-gradient(135deg,rgba(255,210,80,0.06),rgba(255,150,80,0.04));
       border:1px solid rgba(255,210,80,0.2); border-radius:14px; padding:14px 16px;
     }
     .brahma-card .info-card-label { color:rgba(255,210,80,0.7); }
     .disclaimer { font-size:11px; color:var(--muted); font-style:italic; margin-top:4px; }
-    /* Loading / Error */
     .loading { text-align:center; padding:40px 20px; color:var(--muted); font-style:italic; font-size:16px; }
     .loading .spinner { font-size:32px; display:block; margin-bottom:12px; animation:spin 2s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
     .error-box { background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.3); border-radius:12px; padding:16px; color:var(--red); font-size:14px; line-height:1.6; }
-    /* Footer */
+    /* SEO-friendly hidden description for screen readers & crawlers */
+    .seo-description {
+      font-size:13px; color:var(--muted); text-align:center;
+      padding:8px 4px; line-height:1.6;
+    }
     .footer { text-align:center; font-size:11px; color:rgba(240,234,214,0.3); letter-spacing:1px; padding:8px 0; font-style:italic; }
   </style>
 </head>
 <body>
 <div class="container">
 
-
-<div style="background:rgba(255,210,80,0.15);border:1px solid rgba(255,210,80,0.4);border-radius:10px;padding:10px 14px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;color:#FFD250;">
-  🚧 WORK IN PROGRESS · Beta v0.1 · Data may vary slightly from published panchangams
-</div>
+  <div class="wip-banner">
+    🚧 WORK IN PROGRESS · Beta v0.1 · Data may vary slightly from published panchangams
+  </div>
 
   <div class="header">
     <div class="header-om">ॐ</div>
     <h1>SG Panchang</h1>
     <p>சிங்கப்பூர் பஞ்சாங்கம் · Singapore Standard Time</p>
   </div>
+
+  <!-- SEO description visible to Google -->
+  <p class="seo-description">
+    Free Singapore Panchangam — Today's Tithi, Nakshatra, Rahu Kalam, Yama Gandam,
+    Gulika Kalam, Nalla Neram & Muhurta in SGT (UTC+8). Lahiri Ayanamsa.
+  </p>
 
   <div class="clock-bar">
     <div class="clock-time" id="clock">--:--:--</div>
@@ -171,7 +230,9 @@
     <div class="loading"><span class="spinner">🌙</span>Consulting the stars…</div>
   </div>
 
-  <div class="footer">Lahiri Ayanamsa · Thirukanitham Standard · SGT (UTC+8)</div>
+  <div class="footer">
+    Lahiri Ayanamsa · Thirukanitham Standard · SGT (UTC+8)
+  </div>
 </div>
 
 <script>
@@ -183,21 +244,16 @@ const YAMA_PORTIONS   = [5,4,3,2,1,7,6];
 const GULIKA_PORTIONS = [7,6,5,4,3,2,1];
 
 function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
-
 function fmtH(h) {
-  let hh = Math.floor(h) % 24, mm = Math.round((h%1)*60);
-  if (mm===60){hh++;mm=0;}
-  const ap = hh<12?'AM':'PM', h12 = hh%12||12;
+  let hh=Math.floor(h)%24, mm=Math.round((h%1)*60);
+  if(mm===60){hh++;mm=0;}
+  const ap=hh<12?'AM':'PM', h12=hh%12||12;
   return `${pad(h12)}:${pad(mm)} ${ap}`;
 }
-
 function getTimePeriod(portion, sunriseH, dayDurH) {
-  const slot = dayDurH/8;
-  const startH = sunriseH + (portion-1)*slot;
-  const endH   = startH + slot;
+  const slot=dayDurH/8, startH=sunriseH+(portion-1)*slot, endH=startH+slot;
   return { str:`${fmtH(startH)} – ${fmtH(endH)}`, startH, endH };
 }
-
 function getMoonEmoji(i) {
   if(i===15)return'🌕'; if(i===30||i===1)return'🌑';
   if(i<=7)return'🌒'; if(i<=14)return'🌔';
@@ -205,26 +261,26 @@ function getMoonEmoji(i) {
 }
 
 function updateClock() {
-  const sgt = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Singapore'}));
-  document.getElementById('clock').textContent = `${pad(sgt.getHours())}:${pad(sgt.getMinutes())}:${pad(sgt.getSeconds())}`;
+  const sgt=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Singapore'}));
+  document.getElementById('clock').textContent=`${pad(sgt.getHours())}:${pad(sgt.getMinutes())}:${pad(sgt.getSeconds())}`;
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('clock-date').innerHTML = `${days[sgt.getDay()]}<br>${sgt.getDate()} ${months[sgt.getMonth()]} ${sgt.getFullYear()}`;
+  document.getElementById('clock-date').innerHTML=`${days[sgt.getDay()]}<br>${sgt.getDate()} ${months[sgt.getMonth()]} ${sgt.getFullYear()}`;
 }
 
-let tithiEndsAt = null;
+let tithiEndsAt=null;
 function updateCountdown() {
-  if (!tithiEndsAt) return;
-  const diff = tithiEndsAt - new Date();
-  if (diff <= 0) { loadPanchanga(); return; }
-  const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+  if(!tithiEndsAt)return;
+  const diff=tithiEndsAt-new Date();
+  if(diff<=0){loadPanchanga();return;}
+  const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
   const el=document.getElementById('countdown');
-  if(el) el.textContent=`${pad(h)}:${pad(m)}:${pad(s)}`;
+  if(el)el.textContent=`${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
 function buildUI(data, sunData) {
   const tithi=data.tithi, nak=data.nakshatra, yoga=data.yoga, karana=data.karana, tm=data.tamil_month;
-  tithiEndsAt = new Date(tithi.ends_at_sgt_iso);
+  tithiEndsAt=new Date(tithi.ends_at_sgt_iso);
 
   const sunriseH=SUNRISE_H, sunsetH=SUNSET_H, noonH=NOON_H, dayDurH=sunsetH-sunriseH;
   const sgt=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Singapore'}));
@@ -240,10 +296,10 @@ function buildUI(data, sunData) {
   const ac=p=>(nowH>=p.startH&&nowH<p.endH)?'active':'';
   const nb=p=>(nowH>=p.startH&&nowH<p.endH)?'<span class="now-badge">NOW</span>':'';
 
-  const nallaHTML = (sunData.nalla_neram||[]).map(t=>`<div class="nalla-period">🟢 ${t}</div>`).join('');
-  const gowriHTML = (sunData.gowri_nalla_neram||[]).map(t=>`<div class="nalla-period">🔵 ${t}</div>`).join('');
+  const nallaHTML=(sunData.nalla_neram||[]).map(t=>`<div class="nalla-period">🟢 ${t}</div>`).join('');
+  const gowriHTML=(sunData.gowri_nalla_neram||[]).map(t=>`<div class="nalla-period">🔵 ${t}</div>`).join('');
 
-  document.getElementById('main-content').innerHTML = `
+  document.getElementById('main-content').innerHTML=`
 
     <div class="month-strip">
       <div>
@@ -280,7 +336,7 @@ function buildUI(data, sunData) {
         <span class="info-card-icon">⭐</span>
         <div class="info-card-label">Nakshatra · நட்சத்திரம்</div>
         <div class="info-card-value">${nak.name}</div>
-        <div class="info-card-sub">${nak.name_tamil}</div>
+        <div class="info-card-sub">${nak.name_tamil} · Pada ${nak.pada}</div>
         <div class="info-card-sub2">Until ${nak.ends_at_sgt}</div>
       </div>
       <div class="info-card">
@@ -316,7 +372,7 @@ function buildUI(data, sunData) {
     <div class="brahma-card">
       <div class="info-card-label">Brahma Muhurta · பிரம்ம முகூர்த்தம்</div>
       <div class="info-card-value" style="font-size:16px;margin-top:4px;">${brahmaStr}</div>
-      <div class="disclaimer">* Time may vary by 1–2 minutes depending on exact sunrise</div>
+      <div class="disclaimer">* May vary by 1–2 minutes depending on exact sunrise</div>
     </div>
 
     <div class="nalla-card">
@@ -355,24 +411,19 @@ function buildUI(data, sunData) {
 
 async function loadPanchanga() {
   try {
-    const [tithiRes, sunRes] = await Promise.all([
+    const [tithiRes,sunRes]=await Promise.all([
       fetch(`${API}/tithi-now`),
       fetch(`${API}/sunrise`)
     ]);
-    if (!tithiRes.ok) throw new Error(`Tithi API: ${tithiRes.status}`);
-    if (!sunRes.ok)   throw new Error(`Sunrise API: ${sunRes.status}`);
+    if(!tithiRes.ok)throw new Error(`Tithi API: ${tithiRes.status}`);
+    if(!sunRes.ok)throw new Error(`Sunrise API: ${sunRes.status}`);
     const data=await tithiRes.json(), sunData=await sunRes.json();
     SUNRISE_H=sunData.sunrise_h; SUNSET_H=sunData.sunset_h; NOON_H=sunData.noon_h;
-    buildUI(data, sunData);
+    buildUI(data,sunData);
   } catch(err) {
     document.getElementById('main-content').innerHTML=`
       <div class="error-box">
         ⚠️ <strong>Could not connect to API.</strong><br><br>
-        Run in terminal:<br>
-        <code style="background:rgba(255,255,255,0.1);padding:6px 10px;border-radius:4px;display:inline-block;margin-top:8px;">
-          fastapi dev app/main.py
-        </code><br><br>
-        Then refresh.<br><br>
         <small style="opacity:0.6;">Error: ${err.message}</small>
       </div>`;
   }
@@ -380,9 +431,9 @@ async function loadPanchanga() {
 
 updateClock();
 loadPanchanga();
-setInterval(updateClock, 1000);
-setInterval(updateCountdown, 1000);
-setInterval(loadPanchanga, 60000);
+setInterval(updateClock,1000);
+setInterval(updateCountdown,1000);
+setInterval(loadPanchanga,60000);
 </script>
 </body>
 </html>
