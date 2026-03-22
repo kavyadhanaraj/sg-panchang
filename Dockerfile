@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# Install system dependencies including sqlite3
 RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     sqlite3 \
@@ -14,6 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8080
 
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}
